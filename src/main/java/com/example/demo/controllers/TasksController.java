@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.models.Task;
 import com.example.demo.models.TasksRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +51,26 @@ public class TasksController {
         ).body(created);
     }
 
+    //@Transactional
     @RequestMapping(method = RequestMethod.PUT, value = "/tasks/{id}")
-    ResponseEntity<?> updateTasks(@PathVariable int id, @RequestBody @Valid Task toUpdate){
+    ResponseEntity<?> updateTasks(@PathVariable Integer id, @RequestBody @Valid Task toUpdate){
         if(!repository.existsById(id))
             return ResponseEntity.notFound().build();
-        toUpdate.setId(id);
-        repository.save(toUpdate);
+        repository.findById(id)
+            .ifPresent(task -> {
+                task.updateFrom(toUpdate);
+                repository.save(task);
+            });
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @RequestMapping(method = RequestMethod.PATCH, value = "/tasks/{id}")
+    ResponseEntity<?> toggleTasks(@PathVariable Integer id){
+        if(!repository.existsById(id))
+            return ResponseEntity.notFound().build();
+        repository.findById(id)
+                .ifPresent(task -> task.setDone(!task.isDone()));
         return ResponseEntity.noContent().build();
     }
 }
