@@ -12,6 +12,6 @@ import java.util.List;
 public interface SqlTaskGroupRepository extends TaskGroupRepository, JpaRepository<TaskGroup, Integer> {
 
     @Override
-    @Query("FROM TaskGroup g JOIN FETCH g.tasks")
+    @Query("SELECT DISTINCT g FROM TaskGroup g JOIN FETCH g.tasks")
     List<TaskGroup> findAll();
 }
