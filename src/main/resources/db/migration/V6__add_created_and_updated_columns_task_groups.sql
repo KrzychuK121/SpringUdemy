@@ -1,0 +1,2 @@
+ALTER TABLE task_groups ADD COLUMN created_on DATETIME NULL;
+ALTER TABLE task_groups ADD COLUMN updated_on DATETIME NULL;

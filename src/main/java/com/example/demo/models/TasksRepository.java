@@ -17,4 +17,5 @@ public interface TasksRepository {
     Task save(Task entity);
 
     boolean existsById(Integer id);
+    boolean existsByDoneIsFalseAndGroupId(Integer groupId);
 }

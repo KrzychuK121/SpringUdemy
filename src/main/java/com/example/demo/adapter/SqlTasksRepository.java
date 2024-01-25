@@ -1,5 +1,7 @@
-package com.example.demo.models;
+package com.example.demo.adapter;
 
+import com.example.demo.models.Task;
+import com.example.demo.models.TasksRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,6 @@ interface SqlTasksRepository extends TasksRepository, JpaRepository<Task, Intege
     @Override
     @Query(nativeQuery = true, value = "SELECT COUNT(*) > 0 FROM task WHERE id = :identyfikator")
     boolean existsById(@Param("identyfikator") Integer id);
+    @Override
+    boolean existsByDoneIsFalseAndGroupId(Integer groupId);
 }
