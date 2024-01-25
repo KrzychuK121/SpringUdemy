@@ -24,6 +24,11 @@ public class Task extends TaskSchema {
 
     public Task() { super(); }
 
+    public Task(String description, LocalDateTime deadline){
+        this.description = description;
+        this.deadline = deadline;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }

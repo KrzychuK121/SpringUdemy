@@ -47,7 +47,7 @@ public class Project {
         this.taskGroups = taskGroups;
     }
 
-    Set<ProjectStep> getProjectSteps() {
+    public Set<ProjectStep> getProjectSteps() {
         return projectSteps;
     }
 
