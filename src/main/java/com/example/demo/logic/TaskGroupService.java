@@ -1,14 +1,10 @@
 package com.example.demo.logic;
 
-import com.example.demo.TaskConfigurationProperties;
 import com.example.demo.models.TaskGroup;
 import com.example.demo.models.TaskGroupRepository;
 import com.example.demo.models.TasksRepository;
 import com.example.demo.models.projection.GroupReadModel;
 import com.example.demo.models.projection.GroupWriteModel;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 

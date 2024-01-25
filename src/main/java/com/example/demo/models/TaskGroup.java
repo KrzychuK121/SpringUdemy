@@ -32,7 +32,7 @@ public class TaskGroup extends TaskSchema {
         return project;
     }
 
-    void setProject(Project project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 }
