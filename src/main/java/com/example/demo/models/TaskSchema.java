@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @MappedSuperclass
-abstract class TaskSchema {
+public abstract class TaskSchema {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;

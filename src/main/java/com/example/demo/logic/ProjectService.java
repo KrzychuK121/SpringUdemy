@@ -44,9 +44,8 @@ public class ProjectService {
             );
         // If can't create, throw exception
         if(
-            taskGroupRepository
-            .existsByDoneIsFalseAndProjectId(projectId) ||
-            !config.getTaskTempConf().isAllowMultipleTasks()
+            !config.getTaskTempConf().isAllowMultipleTasks() &&
+            taskGroupRepository.existsByDoneIsFalseAndProjectId(projectId)
         ){
             throw new IllegalStateException("Only one undone group from project is allowed");
         }
@@ -77,7 +76,7 @@ public class ProjectService {
         toCreate.setTasks(tasks);
 
         // Return group of tasks converted to DTO
-        return new GroupReadModel(toCreate);
+        return new GroupReadModel(taskGroupRepository.save(toCreate));
     }
 
 }
