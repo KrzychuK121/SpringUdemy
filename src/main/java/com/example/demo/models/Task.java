@@ -29,6 +29,12 @@ public class Task extends TaskSchema {
         this.deadline = deadline;
     }
 
+    public Task(String description, LocalDateTime deadline, TaskGroup group){
+        this(description, deadline);
+        if(group != null)
+            this.group = group;
+    }
+
     public LocalDateTime getDeadline() {
         return deadline;
     }

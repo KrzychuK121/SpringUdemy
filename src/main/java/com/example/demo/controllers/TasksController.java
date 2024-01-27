@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,7 +22,13 @@ public class TasksController {
 
     private final TasksRepository repository;
 
-    public TasksController(final TasksRepository repository){
+    // Qualifier -> wskazuje na to z jakiej definicji klasy korzystamy przy wstrzykiwaniu
+    // Lazy -> bean zostaje dodany dopiero gdy będzie używany
+    public TasksController(
+            /*@Qualifier("sqlTasksRepository")*/
+            /*@Lazy*/
+            final TasksRepository repository
+    ){
         this.repository = repository;
     }
 

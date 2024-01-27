@@ -137,7 +137,7 @@ class ProjectServiceTest {
         // and
         var mockConfig = taskConfigurationPropertiesReturns(false);
         // system under test
-        var toTest = new ProjectService(mockProjectRepository, mockGroupRepository, mockConfig);
+        var toTest = new ProjectService(mockProjectRepository, mockGroupRepository, null, mockConfig);
 
         // when
         var exception = catchThrowable(() -> toTest.createGroup(0, LocalDateTime.now()));
@@ -164,7 +164,7 @@ class ProjectServiceTest {
     void createGroup_noProjects_throwsIllegalArgumentException(){
         // given
         var mockProjectRepository = projectRepositoryReturning(null);
-        var toTest = new ProjectService(mockProjectRepository, null, null);
+        var toTest = new ProjectService(mockProjectRepository, null, null, null);
 
         // when
         var exception = catchThrowable(() -> toTest.createGroup(0, LocalDateTime.now()));
@@ -196,12 +196,15 @@ class ProjectServiceTest {
         // and
         InMemoryGroupRepository inMemoryGroupRepo = inMemoryGroupRepository();
 
+        var serviceWithInMemRepo = dummyGroupService(inMemoryGroupRepo);
+
         int countBeforeCall = inMemoryGroupRepo.count();
 
         // system under control
         var toTest = new ProjectService(
             mockProjectRepository,
             inMemoryGroupRepo,
+            serviceWithInMemRepo,
             mockTaskConfigurationProperties
         );
 
@@ -220,5 +223,12 @@ class ProjectServiceTest {
         .hasFieldOrPropertyWithValue("description", "bar");*/
         assertThat(countBeforeCall + 1)
         .isEqualTo(inMemoryGroupRepo.count());
+    }
+
+    private TaskGroupService dummyGroupService(final InMemoryGroupRepository inMemoryGroupRepo) {
+        return new TaskGroupService(
+                inMemoryGroupRepo,
+                null
+        );
     }
 }
