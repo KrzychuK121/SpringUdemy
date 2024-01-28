@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class TasksController {
         this.repository = repository;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tasks", params = {"!sort", "!page", "!size"})
+    @RequestMapping(method = RequestMethod.GET, value = "/tasks", params = {"!sort", "!page", "!size", "!isDone"})
     public ResponseEntity<List<Task>> readAllTasks(){
         logger.warn("Exposing all the tasks!");
         return ResponseEntity.ok(repository.findAll());
@@ -42,6 +43,12 @@ public class TasksController {
     public ResponseEntity<List<Task>> readAllTasks(Pageable page){
         logger.info("Custom pager");
         return ResponseEntity.ok(repository.findAll(page).getContent());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/tasks", params = { "isDone" })
+    public ResponseEntity<List<Task>> readAllDoneTasks(boolean isDone){
+        logger.info("All done tasks displayed");
+        return ResponseEntity.ok(repository.findByDone(isDone));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/tasks/{id}")

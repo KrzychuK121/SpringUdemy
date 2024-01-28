@@ -51,7 +51,14 @@ public class TestConfiguration {
 
             @Override
             public List<Task> findByDone(boolean done) {
-                return null;
+                List<Task> result = new ArrayList<>();
+                tasks.forEach(
+                    (id, task) -> {
+                        if(task.isDone() == done)
+                            result.add(task);
+                    }
+                );
+                return result;
             }
 
             @Override
