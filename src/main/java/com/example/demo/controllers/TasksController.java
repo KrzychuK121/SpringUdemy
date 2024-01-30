@@ -1,23 +1,22 @@
 package com.example.demo.controllers;
 
+import com.example.demo.logic.TaskService;
 import com.example.demo.models.Task;
 import com.example.demo.models.TasksRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController //@Controller
+@RequestMapping("/tasks")
 public class TasksController {
     private static final Logger logger = LoggerFactory.getLogger(TasksController.class);
 
@@ -33,32 +32,43 @@ public class TasksController {
         this.repository = repository;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tasks", params = {"!sort", "!page", "!size", "!isDone"})
+    @RequestMapping(method = RequestMethod.GET, params = {"!sort", "!page", "!size", "!isDone"})
     public ResponseEntity<List<Task>> readAllTasks(){
         logger.warn("Exposing all the tasks!");
         return ResponseEntity.ok(repository.findAll());
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tasks")
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Task>> readAllTasks(Pageable page){
         logger.info("Custom pager");
         return ResponseEntity.ok(repository.findAll(page).getContent());
     }
+    //-------------------------
+    // Z kursu
+    @RequestMapping(method = RequestMethod.GET, value = "/search/done")
+    public ResponseEntity<List<Task>> readDoneTasks(
+        @RequestParam(defaultValue = "true") boolean state
+    ){
+        logger.info("All done tasks displayed");
+        return ResponseEntity.ok(repository.findByDone(state));
+    }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tasks", params = { "isDone" })
+    // Moje
+    @RequestMapping(method = RequestMethod.GET, params = { "isDone" })
     public ResponseEntity<List<Task>> readAllDoneTasks(boolean isDone){
         logger.info("All done tasks displayed");
         return ResponseEntity.ok(repository.findByDone(isDone));
     }
+    //-------------------------
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tasks/{id}")
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<Task> readTaskById(@PathVariable int id){
         return repository.findById(id)
                 .map(task -> ResponseEntity.ok(task)) // ResponseEntity::ok
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/tasks")
+    @RequestMapping(method = RequestMethod.POST)
     ResponseEntity<Task> postTask(@RequestBody @Valid Task toCreate){
         Task created = repository.save(toCreate);
         return ResponseEntity.created(
@@ -67,7 +77,7 @@ public class TasksController {
     }
 
     //@Transactional
-    @RequestMapping(method = RequestMethod.PUT, value = "/tasks/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
     ResponseEntity<?> updateTasks(@PathVariable Integer id, @RequestBody @Valid Task toUpdate){
         if(!repository.existsById(id))
             return ResponseEntity.notFound().build();
@@ -80,7 +90,7 @@ public class TasksController {
     }
 
     @Transactional
-    @RequestMapping(method = RequestMethod.PATCH, value = "/tasks/{id}")
+    @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
     ResponseEntity<?> toggleTasks(@PathVariable Integer id){
         if(!repository.existsById(id))
             return ResponseEntity.notFound().build();
