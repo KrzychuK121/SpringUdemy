@@ -21,15 +21,18 @@ public class TasksController {
     private static final Logger logger = LoggerFactory.getLogger(TasksController.class);
 
     private final TasksRepository repository;
+    private final TaskService service;
 
     // Qualifier -> wskazuje na to z jakiej definicji klasy korzystamy przy wstrzykiwaniu
     // Lazy -> bean zostaje dodany dopiero gdy będzie używany
     public TasksController(
             /*@Qualifier("sqlTasksRepository")*/
             /*@Lazy*/
-            final TasksRepository repository
+            final TasksRepository repository,
+            final TaskService service
     ){
         this.repository = repository;
+        this.service = service;
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"!sort", "!page", "!size", "!isDone"})
@@ -60,6 +63,17 @@ public class TasksController {
         return ResponseEntity.ok(repository.findByDone(isDone));
     }
     //-------------------------
+
+    @RequestMapping(method = RequestMethod.GET, value = "/search/today")
+    public ResponseEntity<List<Task>> readTodaysTasks(){
+        try {
+            return ResponseEntity.ok(service.getTodaysAndOutstandingTasks());
+        } catch(IllegalStateException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<Task> readTaskById(@PathVariable int id){

@@ -45,6 +45,11 @@ public class TestConfiguration {
             }
 
             @Override
+            public Optional<List<Task>> findAllByGroupId(Integer groupId) {
+                return Optional.of(List.of());
+            }
+
+            @Override
             public Page<Task> findAll(Pageable page) {
                 return null;
             }

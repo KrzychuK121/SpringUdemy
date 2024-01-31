@@ -4,10 +4,12 @@ import com.example.demo.models.TaskGroup;
 import com.example.demo.models.TaskGroupRepository;
 import com.example.demo.models.TasksRepository;
 import com.example.demo.models.projection.GroupReadModel;
+import com.example.demo.models.projection.GroupTaskReadModel;
 import com.example.demo.models.projection.GroupWriteModel;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class TaskGroupService {
     private TaskGroupRepository repository;
     private TasksRepository tasksRepository;
+    private static final Logger logger = LoggerFactory.getLogger(TaskGroupService.class);
 
     TaskGroupService(
         final TaskGroupRepository repository,
@@ -35,6 +38,20 @@ public class TaskGroupService {
             .stream()
             .map(GroupReadModel::new)
             .collect(Collectors.toList());
+    }
+
+    public List<GroupTaskReadModel> getAllGroupTasks(Integer groupId){
+        var result = tasksRepository.findAllByGroupId(groupId)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Group with given id has no tasks")
+            );
+
+        var tasksReadModel = new ArrayList<GroupTaskReadModel>(result.size());
+        result.forEach(
+            task -> tasksReadModel.add(new GroupTaskReadModel(task))
+        );
+
+        return tasksReadModel;
     }
 
     public void toggleGroup(Integer groupId){

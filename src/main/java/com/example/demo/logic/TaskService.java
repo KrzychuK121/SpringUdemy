@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,5 +25,11 @@ public class TaskService {
         logger.info("Supply async!");
         return CompletableFuture
             .supplyAsync(repository::findAll);
+    }
+
+    public List<Task> getTodaysAndOutstandingTasks(){
+        return repository.findTasksDue(
+            LocalDateTime.of(LocalDate.now(), LocalTime.MAX)
+        ).orElseThrow(() -> new IllegalStateException("Theres no tasks until today"));
     }
 }
