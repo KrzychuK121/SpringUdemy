@@ -5,6 +5,7 @@ import com.example.demo.models.*;
 import com.example.demo.models.projection.GroupReadModel;
 import com.example.demo.models.projection.GroupTaskWriteModel;
 import com.example.demo.models.projection.GroupWriteModel;
+import com.example.demo.models.projection.ProjectWriteModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,8 +37,8 @@ public class ProjectService {
         return repository.findAll();
     }
 
-    public Project create(Project toSave){
-        return repository.save(toSave);
+    public Project create(final ProjectWriteModel toSave){
+        return repository.save(toSave.toProject());
     }
 
     public GroupReadModel createGroup(Integer projectId, LocalDateTime deadline){
@@ -78,7 +79,7 @@ public class ProjectService {
         toCreate.setTasks(tasks);
 
         // Return group of tasks converted to DTO
-        return service.createGroup(toCreate);
+        return service.createGroup(toCreate, projSource);
     }
 
 }

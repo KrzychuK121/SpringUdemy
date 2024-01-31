@@ -11,6 +11,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Configuration
@@ -47,6 +48,11 @@ public class TestConfiguration {
             @Override
             public Optional<List<Task>> findAllByGroupId(Integer groupId) {
                 return Optional.of(List.of());
+            }
+
+            @Override
+            public Optional<List<Task>> findTasksDue(LocalDateTime date) {
+                return Optional.empty();
             }
 
             @Override

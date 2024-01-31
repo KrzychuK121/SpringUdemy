@@ -47,7 +47,7 @@ public class ProjectStep {
         return project;
     }
 
-    void setProject(Project project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 }
