@@ -5,6 +5,7 @@ import com.example.demo.models.ProjectStep;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -12,7 +13,11 @@ public class ProjectWriteModel {
     @NotBlank(message = "The description must be not null!")
     private String description;
     @Valid
-    private List<ProjectStep> steps;
+    private List<ProjectStep> steps = new ArrayList<>();
+
+    public ProjectWriteModel(){
+        steps.add(new ProjectStep());
+    }
 
     public String getDescription() {
         return description;
